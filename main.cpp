@@ -65,7 +65,7 @@ int main()
         std:: string user, cmd, val1, val2;
         if(!parseInputLine(line, user, cmd, val1, val2)){
             std::cout << "Unexpected input format" << std::endl;
-            std::cout << "Input should be: \"User;operation;val1;val2\" or \"EXIT\" to quit" << std::endl;
+            std::cout << "Input should be: \"User;operation;val1;val2\" with val1 and val2 integer values or \"EXIT\" to quit" << std::endl;
             continue;
         }
 
@@ -135,8 +135,6 @@ int division(int val1, int val2)
 bool parseInputLine(const std::string &line, std::string &user, std::string &cmd, std::string &val1, std::string &val2)
 {
     int i = 0;
-    bool read_error = false;
-
     for(const char & c : line)
     {
         if(c == ';'){
@@ -147,16 +145,23 @@ bool parseInputLine(const std::string &line, std::string &user, std::string &cmd
         } else if (i == 1) {
             cmd.push_back(c);
         } else if (i == 2) {
-            val1.push_back(c);
+            if(c == '-' || (c <= '9' && c >= '0')){
+                val1.push_back(c);
+            } else{
+                return false;
+            }
         } else if (i == 3) {
-            val2.push_back(c);
+            if(c == '-' || (c <= '9' && c >= '0')){
+                val2.push_back(c);
+            } else{
+                return false;
+            }
         } else {
-            read_error = true;
-            break;
+            return false;
         }
     }
 
-    return !(read_error || i != 3);
+    return i == 3;
 }
 
 void help(std::vector<Operation*> ops)
